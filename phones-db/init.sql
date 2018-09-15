@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS `phone` (
+  `phone_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(24) NOT NULL,
+  `price` DECIMAL(5,2) NOT NULL,
+  `image_url` VARCHAR(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+  PRIMARY KEY (`phone_id`))
+ENGINE = InnoDB;

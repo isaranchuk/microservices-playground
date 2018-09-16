@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  orders:
+    image: orders:latest
+    restart: on-failure
+    environment:
+      - PHONES_BASE_URL=http://phones:8080
+    ports:
+     - "9090:9090"
+
   phones:
     image: phones:latest
     restart: on-failure

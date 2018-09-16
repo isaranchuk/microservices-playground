@@ -1,5 +1,6 @@
 package com.isaranchuk.orders.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +14,7 @@ public class PhonesServiceClient {
 
     private final String baseUrl;
 
-    public PhonesServiceClient(RestTemplateBuilder restTemplateBuilder, String baseUrl) {
+    public PhonesServiceClient(RestTemplateBuilder restTemplateBuilder, @Value("${phones.base-url}") String baseUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.baseUrl = baseUrl;
     }

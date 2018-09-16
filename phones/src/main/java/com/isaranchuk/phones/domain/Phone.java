@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Entity
 public class Phone {
     @Id
-    private Integer phoneId;
+    private Long phoneId;
     private String name;
     private BigDecimal price;
     private String description;

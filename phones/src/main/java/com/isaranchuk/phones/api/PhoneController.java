@@ -1,21 +1,18 @@
 package com.isaranchuk.phones.api;
 
-import com.isaranchuk.phones.domain.Phone;
 import com.isaranchuk.phones.repostitory.PhoneRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Slf4j
 @RestController
-public class PhonesController {
+public class PhoneController {
 
     private final PhoneRepository phoneRepository;
 
-    public PhonesController(PhoneRepository phoneRepository) {
+    public PhoneController(PhoneRepository phoneRepository) {
         this.phoneRepository = phoneRepository;
     }
 

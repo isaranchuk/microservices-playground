@@ -13,11 +13,16 @@ import java.util.List;
 @RestController
 public class PhonesController {
 
-    private PhoneRepository phoneRepository;
+    private final PhoneRepository phoneRepository;
+
+    public PhonesController(PhoneRepository phoneRepository) {
+        this.phoneRepository = phoneRepository;
+    }
 
     @GetMapping("/v1/phones")
-    public ResponseEntity<List<Phone>> phones() {
+    public ResponseEntity<GetPhonesResponse> phones() {
         log.info("Getting phones");
-        return ResponseEntity.ok(phoneRepository.findAll());
+        GetPhonesResponse body = new GetPhonesResponse(phoneRepository.findAll());
+        return ResponseEntity.ok(body);
     }
 }

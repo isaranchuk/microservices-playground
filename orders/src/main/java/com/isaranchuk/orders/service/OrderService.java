@@ -4,11 +4,16 @@ import com.isaranchuk.orders.client.PhonesResponse;
 import com.isaranchuk.orders.client.PhonesServiceClient;
 import com.isaranchuk.orders.domain.Order;
 import com.isaranchuk.orders.domain.Phone;
+import com.isaranchuk.orders.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -17,24 +22,24 @@ public class OrderService {
 
     private final PhonesServiceClient phonesServiceClient;
 
-    public OrderService(PhonesServiceClient phonesServiceClient) {
+    private final OrderRepository orderRepository;
+
+    public OrderService(PhonesServiceClient phonesServiceClient, OrderRepository orderRepository) {
         this.phonesServiceClient = phonesServiceClient;
+        this.orderRepository = orderRepository;
     }
 
-    public void create(Order order) {
+    public Mono<Order> create(Order order) {
         BigDecimal totalPrice = BigDecimal.ZERO;
-        order.getPhones().forEach(orderPhone -> {
-            PhonesResponse.Phone phoneInCatalog = findPhoneInCatalog(orderPhone)
-                    .orElseThrow(() -> new IllegalStateException("Phone in order doesn't match catalog: " + orderPhone));
-            totalPrice.add(phoneInCatalog.getPrice());
-        });
-        log.info("Order created: {}, total price: {}", order, totalPrice);
-    }
-
-    private Optional<PhonesResponse.Phone> findPhoneInCatalog(Phone orderPhone) {
-        List<PhonesResponse.Phone> catalog = phonesServiceClient.getPhones().getPhones();
-        return catalog.stream()
-                .filter(phone -> phone.getPhoneId().equals(orderPhone.getPhoneId()))
-                .findAny();
+        return phonesServiceClient.getPhones()
+                .map(phonesResponse -> {
+                    List<PhonesResponse.Phone> phones = phonesResponse.getPhones();
+                    order.getPhones().forEach(orderPhone -> {
+                        // validate if it's a correct phone
+                        totalPrice.add(orderPhone.getPrice());
+                    });
+                    return order;
+                })
+                .publish(orderMono -> orderRepository.insert(order));
     }
 }

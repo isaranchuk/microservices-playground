@@ -34,6 +34,7 @@ public class OrderService {
         return phonesServiceClient.getPhones()
                 .map(phonesResponse -> {
                     List<PhonesResponse.Phone> phones = phonesResponse.getPhones();
+                    log.debug("Phones: ", phones);
                     order.getPhones().forEach(orderPhone -> {
                         // validate if it's a correct phone
                         totalPrice.add(orderPhone.getPrice());

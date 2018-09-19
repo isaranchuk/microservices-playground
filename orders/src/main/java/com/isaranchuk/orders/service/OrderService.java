@@ -1,20 +1,16 @@
 package com.isaranchuk.orders.service;
 
+import com.isaranchuk.orders.api.CreateOrderRequest;
 import com.isaranchuk.orders.client.PhonesResponse;
 import com.isaranchuk.orders.client.PhonesServiceClient;
 import com.isaranchuk.orders.domain.Order;
-import com.isaranchuk.orders.domain.Phone;
 import com.isaranchuk.orders.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,20 +25,26 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Mono<Order> create(Order order) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
+    public Mono<Order> create(CreateOrderRequest request) {
         return phonesServiceClient.getPhones()
-                .map(phonesResponse -> getOrder(order, totalPrice, phonesResponse))
-                .flatMap(order1 -> orderRepository.insert(order));
+                .map(phonesResponse -> getOrder(request, phonesResponse))
+                .flatMap(orderRepository::insert);
     }
 
-    private Order getOrder(Order order, BigDecimal totalPrice, PhonesResponse phonesResponse) {
-        List<PhonesResponse.Phone> phones = phonesResponse.getPhones();
-        log.info("Phones: {}", phones);
-        order.getPhones().forEach(orderPhone -> {
-            // validate if it's a correct phone
-            totalPrice.add(orderPhone.getPrice());
-        });
-        return order;
+    private Order getOrder(CreateOrderRequest request, PhonesResponse phonesResponse) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        List<PhonesResponse.Phone> catalog = phonesResponse.getPhones();
+
+        for (Long orderPhoneId : request.getPhoneIds()) {
+            PhonesResponse.Phone phone = findPhoneInCatalog(orderPhoneId, catalog);
+            totalPrice = totalPrice.add(phone.getPrice());
+        }
+
+        return Order.valueOf(request, totalPrice);
+    }
+
+    private PhonesResponse.Phone findPhoneInCatalog(Long phoneId, List<PhonesResponse.Phone> catalog) {
+        return catalog.stream().filter(phone -> phone.getPhoneId().equals(phoneId)).findAny()
+                        .orElseThrow(() -> new IllegalStateException("Invalid phone id: " + phoneId));
     }
 }

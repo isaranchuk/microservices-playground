@@ -1,7 +1,8 @@
 {
-  "customerId" : 12,
-  "phones" : [{
-    "phoneId" : 11,
-    "price" : 25.21
-  }]
+  "firstName": "Tony",
+  "lastName": "Tester",
+  "phoneIds": [
+    1,
+    2
+  ]
 }

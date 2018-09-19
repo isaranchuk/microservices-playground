@@ -1,13 +1,26 @@
 package com.isaranchuk.orders.domain;
 
+import com.isaranchuk.orders.api.CreateOrderRequest;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @Document(collection = "orders")
 public class Order {
-    private Long customerId;
-    private List<Phone> phones;
+    private String firstName;
+    private String lastName;
+    private BigDecimal totalPrice;
+    private List<Long> phoneIds;
+
+    public static Order valueOf(CreateOrderRequest request, BigDecimal totalPrice) {
+        Order order = new Order();
+        order.setFirstName(request.getFirstName());
+        order.setLastName(request.getLastName());
+        order.setPhoneIds(request.getPhoneIds());
+        order.setTotalPrice(totalPrice);
+        return order;
+    }
 }

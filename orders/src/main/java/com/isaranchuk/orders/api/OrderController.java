@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("/v1/orders")
@@ -20,8 +22,8 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Order> create(@RequestBody Order order) {
-        log.info("Creating new order: {}", order);
-        return orderService.create(order);
+    public Mono<Order> create(@Valid @RequestBody CreateOrderRequest request) {
+        log.info("Creating new order: {}", request);
+        return orderService.create(request);
     }
 }

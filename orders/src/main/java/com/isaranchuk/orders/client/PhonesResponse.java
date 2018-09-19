@@ -11,7 +11,7 @@ public class PhonesResponse {
 
     @Data
     public static class Phone {
-        private Integer phoneId;
+        private Long phoneId;
         private BigDecimal price;
     }
 }

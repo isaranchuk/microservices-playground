@@ -32,15 +32,17 @@ public class OrderService {
     public Mono<Order> create(Order order) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         return phonesServiceClient.getPhones()
-                .map(phonesResponse -> {
-                    List<PhonesResponse.Phone> phones = phonesResponse.getPhones();
-                    log.debug("Phones: ", phones);
-                    order.getPhones().forEach(orderPhone -> {
-                        // validate if it's a correct phone
-                        totalPrice.add(orderPhone.getPrice());
-                    });
-                    return order;
-                })
-                .publish(orderMono -> orderRepository.insert(order));
+                .map(phonesResponse -> getOrder(order, totalPrice, phonesResponse))
+                .flatMap(order1 -> orderRepository.insert(order));
+    }
+
+    private Order getOrder(Order order, BigDecimal totalPrice, PhonesResponse phonesResponse) {
+        List<PhonesResponse.Phone> phones = phonesResponse.getPhones();
+        log.info("Phones: {}", phones);
+        order.getPhones().forEach(orderPhone -> {
+            // validate if it's a correct phone
+            totalPrice.add(orderPhone.getPrice());
+        });
+        return order;
     }
 }

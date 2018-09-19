@@ -21,7 +21,7 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Order> create(@RequestBody Order order) {
-        log.debug("Creating new order: {}", order);
+        log.info("Creating new order: {}", order);
         return orderService.create(order);
     }
 }

@@ -1,1 +1,3 @@
 phones.base-url: ${PHONES_BASE_URL}
+
+spring.data.mongodb.host: ${MONGODB_HOST}

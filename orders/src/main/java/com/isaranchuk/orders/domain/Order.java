@@ -12,6 +12,7 @@ import java.util.List;
 public class Order {
     private String firstName;
     private String lastName;
+    private String email;
     private BigDecimal totalPrice;
     private List<Long> phoneIds;
 

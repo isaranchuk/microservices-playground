@@ -1,6 +1,7 @@
 {
   "firstName": "Tony",
   "lastName": "Tester",
+  "email": "tt@test.com",
   "phoneIds": [
     1,
     2

@@ -1,9 +1,10 @@
 package com.isaranchuk.orders.service;
 
 import com.isaranchuk.orders.api.CreateOrderRequest;
-import com.isaranchuk.orders.client.PhonesResponse;
+import com.isaranchuk.orders.client.GetPhonesResponse;
 import com.isaranchuk.orders.client.PhonesServiceClient;
 import com.isaranchuk.orders.domain.Order;
+import com.isaranchuk.orders.exception.UnknownPhoneException;
 import com.isaranchuk.orders.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,24 +28,24 @@ public class OrderService {
 
     public Mono<Order> create(CreateOrderRequest request) {
         return phonesServiceClient.getPhones()
-                .map(phonesResponse -> getOrder(request, phonesResponse))
+                .map(getPhonesResponse -> getOrder(request, getPhonesResponse))
                 .flatMap(orderRepository::insert);
     }
 
-    private Order getOrder(CreateOrderRequest request, PhonesResponse phonesResponse) {
+    private Order getOrder(CreateOrderRequest request, GetPhonesResponse getPhonesResponse) {
         BigDecimal totalPrice = BigDecimal.ZERO;
-        List<PhonesResponse.Phone> catalog = phonesResponse.getPhones();
+        List<GetPhonesResponse.Phone> catalog = getPhonesResponse.getPhones();
 
         for (Long orderPhoneId : request.getPhoneIds()) {
-            PhonesResponse.Phone phone = findPhoneInCatalog(orderPhoneId, catalog);
+            GetPhonesResponse.Phone phone = findPhoneInCatalog(orderPhoneId, catalog);
             totalPrice = totalPrice.add(phone.getPrice());
         }
 
         return Order.valueOf(request, totalPrice);
     }
 
-    private PhonesResponse.Phone findPhoneInCatalog(Long phoneId, List<PhonesResponse.Phone> catalog) {
+    private GetPhonesResponse.Phone findPhoneInCatalog(Long phoneId, List<GetPhonesResponse.Phone> catalog) {
         return catalog.stream().filter(phone -> phone.getPhoneId().equals(phoneId)).findAny()
-                        .orElseThrow(() -> new IllegalStateException("Invalid phone id: " + phoneId));
+                        .orElseThrow(() -> new UnknownPhoneException("Unknown phone id: " + phoneId));
     }
 }

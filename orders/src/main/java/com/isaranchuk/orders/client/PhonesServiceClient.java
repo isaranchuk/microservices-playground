@@ -1,9 +1,7 @@
 package com.isaranchuk.orders.client;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -21,7 +19,7 @@ public class PhonesServiceClient {
         this.baseUrl = baseUrl;
     }
 
-    public Mono<PhonesResponse> getPhones() {
-        return webClient.get().uri(baseUrl + GET_PHONES).retrieve().bodyToMono(PhonesResponse.class);
+    public Mono<GetPhonesResponse> getPhones() {
+        return webClient.get().uri(baseUrl + GET_PHONES).retrieve().bodyToMono(GetPhonesResponse.class);
     }
 }

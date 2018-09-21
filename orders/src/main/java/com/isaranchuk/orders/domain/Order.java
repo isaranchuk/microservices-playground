@@ -21,6 +21,7 @@ public class Order {
         order.setFirstName(request.getFirstName());
         order.setLastName(request.getLastName());
         order.setPhoneIds(request.getPhoneIds());
+        order.setEmail(request.getEmail());
         order.setTotalPrice(totalPrice);
         return order;
     }

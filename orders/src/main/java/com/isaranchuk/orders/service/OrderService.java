@@ -29,7 +29,10 @@ public class OrderService {
     public Mono<Order> create(CreateOrderRequest request) {
         return phonesServiceClient.getPhones()
                 .map(getPhonesResponse -> getOrder(request, getPhonesResponse))
-                .flatMap(orderRepository::insert);
+                .flatMap(order -> {
+                    log.info("Saving order: {}", order);
+                    return orderRepository.insert(order);
+                });
     }
 
     private Order getOrder(CreateOrderRequest request, GetPhonesResponse getPhonesResponse) {

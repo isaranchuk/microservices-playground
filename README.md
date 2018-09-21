@@ -1,5 +1,3 @@
-[TOC]
-
 # Description
 Microservices playground to emulate Phone App backend, which consists of the following components:
 - Phones Services (Java)

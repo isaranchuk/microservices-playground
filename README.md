@@ -1,9 +1,9 @@
 # Description
 Microservices playground to emulate Phone App backend, which consists of the following components:
-- Phones Services (Java)
-- Phones DB (MySQL)
-- Orders Service (Java)
-- Orders DB (MongoDB)
+- Phones Service
+- Phones DB
+- Orders Service
+- Orders DB
 
 # Technologies
 - Docker
@@ -36,7 +36,6 @@ http://localhost:8082/v1/phones
 #### Response Body
 
 ```
-#!json
 {
     "phones": [
         {
@@ -90,7 +89,6 @@ http://localhost:9091/v1/phones
 #### Response Body
 
 ```
-#!json
 {
     "email": "tt@test.com",
     "firstName": "Tony",
@@ -114,11 +112,11 @@ Component and integration tests can be added like I did in my previous [project]
 
 # Development
 Use `docker-compose` to set up development environment:
-`$ ./build-image.sh`
-`$ docker-compose up`
+1. `$ ./build-image.sh`
+2. `$ docker-compose up`
 
 # What should be improved?
 1. Get Phones API should have paging and not return all phones at once.
-2. Get Phones API should have filter to return only phone we're interested in.
+2. Get Phones API should have filter to return only phones we're interested in.
 3. Get Phones API is a good candidate for caching.
-4. If Create Order process will become more complex and will rely on not reliable third party then it would make send to introduce Queue.
+4. If Create Order process will become more complex, time consuming or will rely on not reliable third party then it would make sense to introduce Queue.
